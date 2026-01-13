@@ -16,6 +16,7 @@ const upload = multer({
   limits: { fileSize: 100 * 1024 * 1024 }
 });
 
+// THIS IS THE ONLY UPLOAD ENDPOINT
 app.post("/upload", upload.single("file"), async (req, res) => {
   try {
     if (!req.file) {
@@ -25,10 +26,13 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     await uploadToDrive(req.file, req.body);
     res.sendStatus(200);
   } catch (err) {
-    console.error(err);
+    console.error("UPLOAD ERROR:", err);
     res.sendStatus(500);
   }
 });
+
+// sanity check
+app.get("/ping", (_, res) => res.send("pong"));
 
 app.get("/", (_, res) => res.send("OK"));
 
@@ -36,5 +40,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
 });
-
-app.post("/ping", (_, res) => res.send("pong"));
